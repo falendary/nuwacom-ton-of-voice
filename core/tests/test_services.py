@@ -71,6 +71,13 @@ class ExtractSignatureTests(TestCase):
         self.assertIn("Anthropic API error", str(ctx.exception))
 
     @patch(MOCK_PATH)
+    def test_unexpected_exception_raises_service_error(self, mock_cls) -> None:
+        mock_cls.return_value.messages.create.side_effect = RuntimeError("unexpected")
+        with self.assertRaises(ClaudeServiceError) as ctx:
+            extract_signature(["Sample brand text."])
+        self.assertIn("Unexpected error", str(ctx.exception))
+
+    @patch(MOCK_PATH)
     def test_non_object_response_raises(self, mock_cls) -> None:
         import json
         mock_cls.return_value = _mock_client(json.dumps(["list", "not", "object"]))
