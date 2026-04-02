@@ -37,6 +37,16 @@ class ExtractSignatureTests(TestCase):
         })
 
     @patch(MOCK_PATH)
+    def test_json_wrapped_in_code_fence_is_parsed(self, mock_cls) -> None:
+        import json
+        fenced = f"```json\n{json.dumps(VALID_SIGNATURE)}\n```"
+        mock_cls.return_value = _mock_client(fenced)
+        result = extract_signature(["Sample brand text."])
+        self.assertEqual(set(result.keys()), {
+            "tone", "sentence_rhythm", "formality_level", "forms_of_address", "emotional_appeal"
+        })
+
+    @patch(MOCK_PATH)
     def test_extra_keys_stripped(self, mock_cls) -> None:
         import json
         extra = {**VALID_SIGNATURE, "unexpected_key": "ignored"}
