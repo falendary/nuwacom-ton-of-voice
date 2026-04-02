@@ -21,49 +21,9 @@ from core.models import Brand, Document
 from core.serializers import BrandSerializer, DocumentSerializer
 from core.services.claude import ClaudeServiceError, extract_signature, transform_text
 from core.services.extraction import extract_text
+from core.utils import MAX_UPLOAD_BYTES, validate_file
 
 logger = logging.getLogger(__name__)
-
-ALLOWED_EXTENSIONS: frozenset[str] = frozenset({"pdf", "docx", "txt", "png"})
-MAX_UPLOAD_BYTES: int = 20 * 1024 * 1024  # 20 MB
-
-# Magic-byte prefixes for binary formats.
-MIME_MAGIC: dict[str, bytes] = {
-    "pdf": b"%PDF",
-    "png": b"\x89PNG",
-    "docx": b"PK",  # DOCX is a ZIP archive
-}
-
-
-def _validate_file(file: Any) -> tuple[str, str | None]:
-    """Validate extension, file size, and magic bytes.
-
-    Parameters
-    ----------
-    file:
-        An uploaded file object (``InMemoryUploadedFile`` or ``TemporaryUploadedFile``).
-
-    Returns
-    -------
-    tuple[str, str | None]
-        ``(extension, error_message)``. ``error_message`` is ``None`` when the file is valid.
-    """
-    name: str = getattr(file, "name", "") or ""
-    ext = name.rsplit(".", 1)[-1].lower() if "." in name else ""
-
-    if ext not in ALLOWED_EXTENSIONS:
-        return ext, f"Unsupported file type '.{ext}'. Accepted: pdf, docx, txt, png."
-
-    if file.size > MAX_UPLOAD_BYTES:
-        return ext, "File exceeds the 20 MB size limit."
-
-    if ext in MIME_MAGIC:
-        header = file.read(8)
-        file.seek(0)
-        if not header.startswith(MIME_MAGIC[ext]):
-            return ext, f"File content does not match the '{ext}' format."
-
-    return ext, None
 
 
 # ---------------------------------------------------------------------------
@@ -261,7 +221,7 @@ class DocumentViewSet(viewsets.ViewSet):
         if not uploaded:
             return Response({"error": "No file provided."}, status=status.HTTP_400_BAD_REQUEST)
 
-        ext, error = _validate_file(uploaded)
+        ext, error = validate_file(uploaded)
         if error:
             return Response({"error": error}, status=status.HTTP_400_BAD_REQUEST)
 

@@ -123,17 +123,23 @@ class DocumentTests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("Unsupported file type", response.json()["error"])
 
-    @patch("core.api_views._validate_file", return_value=("txt", "File exceeds the 20 MB size limit."))
+    @patch("core.api_views.validate_file", return_value=("txt", "File exceeds the 20 MB size limit."))
     def test_upload_oversized_file_returns_400(self, _mock) -> None:
         response = self.client.post(self.list_url, {"file": _txt_file()}, format="multipart")
         self.assertEqual(response.status_code, 400)
         self.assertIn("20 MB", response.json()["error"])
 
-    @patch("core.api_views.MAX_UPLOAD_BYTES", 0)
+    @patch("core.utils.MAX_UPLOAD_BYTES", 0)
     def test_upload_oversized_via_actual_size_check_returns_400(self) -> None:
         response = self.client.post(self.list_url, {"file": _txt_file()}, format="multipart")
         self.assertEqual(response.status_code, 400)
         self.assertIn("20 MB", response.json()["error"])
+
+    @patch("core.utils.MAX_FILENAME_LENGTH", 5)
+    def test_upload_filename_too_long_returns_400(self) -> None:
+        response = self.client.post(self.list_url, {"file": _txt_file()}, format="multipart")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("too long", response.json()["error"])
 
     def test_upload_wrong_magic_bytes_returns_400(self) -> None:
         fake_pdf = SimpleUploadedFile("doc.pdf", b"not a real pdf", content_type="application/pdf")

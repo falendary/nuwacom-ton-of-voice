@@ -96,10 +96,16 @@ class UploadFileTests(TestCase):
         self.assertTrue(any("Unsupported" in m for m in _messages(response)))
         self.assertEqual(Document.objects.count(), 0)
 
-    @patch("core.views.MAX_UPLOAD_BYTES", 0)
+    @patch("core.utils.MAX_UPLOAD_BYTES", 0)
     def test_upload_oversized_shows_error(self) -> None:
         response = self._post(file=_txt())
         self.assertTrue(any("20 MB" in m for m in _messages(response)))
+        self.assertEqual(Document.objects.count(), 0)
+
+    @patch("core.utils.MAX_FILENAME_LENGTH", 5)
+    def test_upload_filename_too_long_shows_error(self) -> None:
+        response = self._post(file=_txt())
+        self.assertTrue(any("too long" in m.lower() for m in _messages(response)))
         self.assertEqual(Document.objects.count(), 0)
 
     def test_upload_wrong_magic_bytes_shows_error(self) -> None:
