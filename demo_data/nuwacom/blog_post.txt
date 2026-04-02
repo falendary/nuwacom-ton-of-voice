@@ -1,0 +1,21 @@
+Why AI Content Sounds Generic (And What to Do About It)
+
+The problem is not the AI. The problem is the prompt.
+
+When you ask an AI to write a blog post, it does exactly what you asked: it writes a blog post. It draws on the statistical average of every blog post it has ever processed. The result is competent, readable, and completely forgettable.
+
+This is not a failure of the technology. It is a failure of the instruction.
+
+The missing variable is specificity. Not topic specificity — AI handles that well. Voice specificity. The particular way your brand builds sentences, chooses words, addresses readers, and lands a point.
+
+Most teams try to solve this with style guides. They write down rules: use active voice, avoid jargon, keep sentences short. These rules help, but they are incomplete. They describe surface characteristics. They do not capture the underlying logic of why your brand sounds the way it does.
+
+What actually works is examples. Concrete, representative samples of your brand at its best. Not descriptions of the voice — demonstrations of it.
+
+We built Nuwacom around this insight. We do not ask you to describe your tone in adjectives. We ask you to show us your best content. Our system analyzes it and extracts the structural characteristics that make it sound like you: the rhythm of your sentences, the level of formality, how you address your reader, what emotional levers you pull and when.
+
+That extracted signature becomes the instruction set for every subsequent AI output. Instead of prompting for a blog post in the abstract, you are prompting for a blog post that matches a specific, documented, reusable voice.
+
+The AI stops sounding generic because you stop giving it generic instructions.
+
+If you want consistent brand voice at scale, the answer is not a better style guide. It is a better prompt — one built from your own content, not from vague descriptions of it. That is what we help you build.

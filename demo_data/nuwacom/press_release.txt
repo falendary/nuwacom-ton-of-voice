@@ -1,0 +1,23 @@
+FOR IMMEDIATE RELEASE
+
+Nuwacom Launches AI Tone-of-Voice Platform to Help Brands Scale Content Without Losing Their Voice
+
+Platform extracts structural voice signatures from existing brand content and applies them to AI-generated text
+
+SAN FRANCISCO, April 2, 2026 — Nuwacom today announced the launch of its AI-powered tone-of-voice platform, designed to solve one of the most persistent challenges in modern content production: making AI-generated text sound like the brand it represents.
+
+The platform works in three stages. First, content teams upload samples of their best-performing brand content — in any combination of PDF, Word, plain text, or image formats. Second, Nuwacom's AI analyzes the samples and generates a structured voice signature capturing five dimensions of brand communication: emotional register, sentence rhythm, formality level, forms of address, and emotional appeal strategy. Third, teams use that signature to transform any input text — from any source — into output that sounds unmistakably on-brand.
+
+"We built Nuwacom because we kept seeing the same problem," said the Nuwacom founding team. "Companies invest years building a distinctive brand voice, then lose it the moment they start scaling content with AI. The existing solutions — style guides, prompting templates, fine-tuning — all require significant effort and still produce inconsistent results. We wanted something systematic and reusable."
+
+The platform is designed for content teams producing at scale, agencies managing multiple client voices, and marketing organizations that need consistency without manual review of every output. The brand voice profile is stored against each brand account and can be applied to any volume of text transformations via a REST API.
+
+The signature extraction process is transparent by design. Every transformation includes a record of the five voice characteristics that shaped the output, giving teams an audit trail they can review and refine over time.
+
+Nuwacom is available now. Pricing and access details are available at nuwacom.com.
+
+About Nuwacom
+
+Nuwacom builds tools that make AI writing work for your brand. Our tone-of-voice platform extracts the structural voice signature from your existing content and applies it consistently across all AI-generated outputs.
+
+Media contact: press@nuwacom.com

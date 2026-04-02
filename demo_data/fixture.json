@@ -1,0 +1,178 @@
+[
+  {
+    "model": "core.brand",
+    "pk": 1,
+    "fields": {
+      "name": "Nuwacom",
+      "description": "A SaaS company building AI tone-of-voice tools. Professional, clarity-first voice with a we-inclusive style and rational appeal.",
+      "signature": null,
+      "created_at": "2026-04-02T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.brand",
+    "pk": 2,
+    "fields": {
+      "name": "Apple",
+      "description": "Consumer electronics and software company known for minimalist, declarative brand communication that addresses each reader as an individual.",
+      "signature": null,
+      "created_at": "2026-04-02T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.document",
+    "pk": 1,
+    "fields": {
+      "brand": 1,
+      "file": "demo_data/nuwacom/about.txt",
+      "filename": "about.txt",
+      "file_type": "txt",
+      "extracted_text": "",
+      "truncated": false,
+      "uploaded_at": "2026-04-02T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.document",
+    "pk": 2,
+    "fields": {
+      "brand": 1,
+      "file": "demo_data/nuwacom/product_page.pdf",
+      "filename": "product_page.pdf",
+      "file_type": "pdf",
+      "extracted_text": "",
+      "truncated": false,
+      "uploaded_at": "2026-04-02T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.document",
+    "pk": 3,
+    "fields": {
+      "brand": 1,
+      "file": "demo_data/nuwacom/product_page.docx",
+      "filename": "product_page.docx",
+      "file_type": "docx",
+      "extracted_text": "",
+      "truncated": false,
+      "uploaded_at": "2026-04-02T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.document",
+    "pk": 4,
+    "fields": {
+      "brand": 1,
+      "file": "demo_data/nuwacom/blog_post.txt",
+      "filename": "blog_post.txt",
+      "file_type": "txt",
+      "extracted_text": "",
+      "truncated": false,
+      "uploaded_at": "2026-04-02T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.document",
+    "pk": 5,
+    "fields": {
+      "brand": 1,
+      "file": "demo_data/nuwacom/press_release.txt",
+      "filename": "press_release.txt",
+      "file_type": "txt",
+      "extracted_text": "",
+      "truncated": false,
+      "uploaded_at": "2026-04-02T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.document",
+    "pk": 6,
+    "fields": {
+      "brand": 1,
+      "file": "demo_data/nuwacom/onboarding_email.txt",
+      "filename": "onboarding_email.txt",
+      "file_type": "txt",
+      "extracted_text": "",
+      "truncated": false,
+      "uploaded_at": "2026-04-02T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.document",
+    "pk": 7,
+    "fields": {
+      "brand": 2,
+      "file": "demo_data/apple/product_tagline.txt",
+      "filename": "product_tagline.txt",
+      "file_type": "txt",
+      "extracted_text": "",
+      "truncated": false,
+      "uploaded_at": "2026-04-02T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.document",
+    "pk": 8,
+    "fields": {
+      "brand": 2,
+      "file": "demo_data/apple/website_hero.txt",
+      "filename": "website_hero.txt",
+      "file_type": "txt",
+      "extracted_text": "",
+      "truncated": false,
+      "uploaded_at": "2026-04-02T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.document",
+    "pk": 9,
+    "fields": {
+      "brand": 2,
+      "file": "demo_data/apple/feature_description.pdf",
+      "filename": "feature_description.pdf",
+      "file_type": "pdf",
+      "extracted_text": "",
+      "truncated": false,
+      "uploaded_at": "2026-04-02T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.document",
+    "pk": 10,
+    "fields": {
+      "brand": 2,
+      "file": "demo_data/apple/feature_description.docx",
+      "filename": "feature_description.docx",
+      "file_type": "docx",
+      "extracted_text": "",
+      "truncated": false,
+      "uploaded_at": "2026-04-02T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.document",
+    "pk": 11,
+    "fields": {
+      "brand": 2,
+      "file": "demo_data/apple/keynote_excerpt.txt",
+      "filename": "keynote_excerpt.txt",
+      "file_type": "txt",
+      "extracted_text": "",
+      "truncated": false,
+      "uploaded_at": "2026-04-02T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.document",
+    "pk": 12,
+    "fields": {
+      "brand": 2,
+      "file": "demo_data/apple/support_article.txt",
+      "filename": "support_article.txt",
+      "file_type": "txt",
+      "extracted_text": "",
+      "truncated": false,
+      "uploaded_at": "2026-04-02T00:00:00Z"
+    }
+  }
+]
