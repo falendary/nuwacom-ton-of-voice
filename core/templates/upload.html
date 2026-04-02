@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Upload — Tone-of-Voice{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Upload Documents</h1>
+  <p class="subtitle">Upload brand content, then extract its tone-of-voice signature.</p>
+</div>
+
+<section class="card">
+  <h2>Select brand</h2>
+  <form method="get" action="/">
+    <div class="form-row">
+      <select name="brand" id="brand-select" onchange="this.form.submit()">
+        <option value="">— choose a brand —</option>
+        {% for b in brands %}
+          <option value="{{ b.pk }}" {% if brand and brand.pk == b.pk %}selected{% endif %}>
+            {{ b.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+  </form>
+</section>
+
+{% if brand %}
+<section class="card">
+  <h2>Upload a file</h2>
+  <p class="hint">Accepted: PDF, DOCX, TXT, PNG &mdash; max 20 MB.</p>
+  <form method="post" action="/" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="brand_id" value="{{ brand.pk }}">
+    <input type="hidden" name="action" value="upload">
+    <div class="form-row form-row--file">
+      <input type="file" name="file" id="file-input" accept=".pdf,.docx,.txt,.png" required>
+      <button type="submit" class="btn btn--primary">Upload</button>
+    </div>
+  </form>
+</section>
+
+<section class="card">
+  <div class="section-header">
+    <h2>Documents for {{ brand.name }}</h2>
+    <form method="post" action="/">
+      {% csrf_token %}
+      <input type="hidden" name="brand_id" value="{{ brand.pk }}">
+      <input type="hidden" name="action" value="extract">
+      <button type="submit" class="btn btn--secondary"
+        {% if not documents %}disabled title="Upload at least one document first"{% endif %}>
+        Extract signature
+      </button>
+    </form>
+  </div>
+
+  {% if documents %}
+    <table>
+      <thead>
+        <tr>
+          <th>Filename</th>
+          <th>Type</th>
+          <th>Truncated</th>
+          <th>Uploaded</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for doc in documents %}
+        <tr>
+          <td>{{ doc.filename }}</td>
+          <td><span class="badge">{{ doc.file_type }}</span></td>
+          <td>{% if doc.truncated %}<span class="badge badge--warn">yes</span>{% else %}no{% endif %}</td>
+          <td>{{ doc.uploaded_at|date:"Y-m-d H:i" }}</td>
+          <td>
+            <form method="post" action="/" class="form-inline">
+              {% csrf_token %}
+              <input type="hidden" name="brand_id" value="{{ brand.pk }}">
+              <input type="hidden" name="action" value="delete">
+              <input type="hidden" name="document_id" value="{{ doc.pk }}">
+              <button type="submit" class="btn btn--danger btn--sm"
+                onclick="return confirm('Delete {{ doc.filename }}?')">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="empty">No documents uploaded yet.</p>
+  {% endif %}
+
+  {% if brand.signature %}
+  <div class="signature-box">
+    <h3>Current signature</h3>
+    <dl>
+      {% for key, value in brand.signature.items %}
+        <dt>{{ key|title|cut:"_" }}</dt>
+        <dd>{{ value }}</dd>
+      {% endfor %}
+    </dl>
+  </div>
+  {% endif %}
+</section>
+{% endif %}
+{% endblock %}
