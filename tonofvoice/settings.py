@@ -93,10 +93,87 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Tone-of-Voice API",
-    "DESCRIPTION": (
-        "Extract brand tone-of-voice signatures from uploaded documents "
-        "and apply them to rewrite arbitrary text using Claude AI."
-    ),
     "VERSION": "0.1.0",
+    "DESCRIPTION": """
+Analyze brand documents and extract a structured **tone-of-voice signature**.
+Use that signature to rewrite any text so it matches the brand's voice — powered by Claude AI.
+
+---
+
+## How it works
+
+1. **Create a brand** — `POST /api/brands/`
+2. **Upload documents** — `POST /api/brands/{id}/documents/` (PDF, DOCX, TXT, PNG)
+3. **Extract signature** — `POST /api/brands/{id}/extract/` — Claude analyzes the documents and returns 5 tone-of-voice characteristics
+4. **Transform text** — `POST /api/brands/{id}/transform/` — Claude rewrites your text in the brand's voice
+
+---
+
+## Signature characteristics
+
+| Field | What it captures |
+|---|---|
+| `tone` | Emotional register and personality |
+| `sentence_rhythm` | Sentence length, pacing, structural rules |
+| `formality_level` | Conversational → institutional spectrum |
+| `forms_of_address` | How the brand addresses the reader (you / we / one) |
+| `emotional_appeal` | Rational vs. emotional persuasion mode |
+
+---
+
+## Errors
+
+All errors return `{"error": "description"}`.
+Status codes: `200 201 204 400 404 502`.
+`502` means the Claude API failed — retry after a short delay.
+""",
     "SERVE_INCLUDE_SCHEMA": False,
+    "TAGS": [
+        {
+            "name": "brands",
+            "description": (
+                "Create and manage brands. Each brand holds a set of uploaded documents "
+                "and a tone-of-voice signature extracted from them."
+            ),
+        },
+        {
+            "name": "documents",
+            "description": (
+                "Upload and manage brand documents. "
+                "Accepted formats: PDF, DOCX, TXT, PNG (OCR). Max size: 20 MB. "
+                "Text is extracted immediately at upload time and stored alongside the file."
+            ),
+        },
+    ],
+    "REDOC_SETTINGS": {
+        "expandResponses": "200,201",
+        "hideDownloadButton": False,
+        "pathInMiddlePanel": True,
+        "theme": {
+            "colors": {
+                "primary": {"main": "#2563eb"},
+            },
+            "typography": {
+                "fontFamily": "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+                "fontSize": "15px",
+                "lineHeight": "1.6",
+                "headings": {
+                    "fontFamily": "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+                    "fontWeight": "600",
+                },
+                "code": {
+                    "fontFamily": "'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace",
+                    "fontSize": "13px",
+                },
+            },
+            "sidebar": {
+                "backgroundColor": "#0f172a",
+                "textColor": "#cbd5e1",
+                "width": "280px",
+            },
+            "rightPanel": {
+                "backgroundColor": "#1e293b",
+            },
+        },
+    },
 }
