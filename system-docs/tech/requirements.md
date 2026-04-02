@@ -1,50 +1,70 @@
-# Requirements
+# Project Requirements
 
-Python 3.13. All packages pinned in `requirements.txt`.
+## Problem
 
-## Runtime dependencies
+AI-generated texts are generic and impersonal. They ignore brand voice, sound Americanized, and fail to reflect the linguistic nuances and forms of address that make a brand recognizable.
 
-| Package | Version | Purpose |
+## Goal
+
+Derive a consistent tone-of-voice from existing corporate communications. Store it as a reusable "signature." Use that signature to rewrite future texts so they reflect the brand's unique voice.
+
+---
+
+## What was asked for
+
+From the original brief (`Testday.pdf`):
+
+1. Define the 5 most important tone-of-voice characteristics
+2. Build a program that identifies patterns in existing brand texts
+3. Extract and store the characteristics in a structured form (the "signature")
+4. Use the signature to optimize future texts
+
+---
+
+## Key decisions
+
+| Topic | Choice | Reason |
 |---|---|---|
-| `Django` | 6.0.3 | Web framework, ORM, admin, templates |
-| `djangorestframework` | 3.17.1 | REST API — serializers, ViewSets, responses |
-| `drf-spectacular` | 0.29.0 | Auto-generates OpenAPI schema → Swagger / ReDoc |
-| `anthropic` | 0.88.0 | Claude API SDK — used only in `core/services/claude.py` |
-| `pypdf` | 6.9.2 | PDF text extraction |
-| `python-docx` | 1.2.0 | DOCX text extraction |
-| `pytesseract` | 0.3.13 | PNG OCR (wraps the `tesseract` system binary) |
-| `pillow` | 12.2.0 | Image handling — required by pytesseract |
-| `python-dotenv` | 1.2.2 | Loads `.env` into `os.environ` at startup |
+| Language | Python / Django | Stronger NLP toolchain; faster REST API prototyping than NodeJS |
+| AI model | Claude (`claude-sonnet-4-6`) | Superior instruction-following for structured JSON output; nuwacom uses Anthropic — testing their stack makes sense |
+| Database | SQLite | Zero-infra overhead for MVP |
+| Auth | Django Admin only | No custom login UI in scope |
+| Task queue | None (synchronous) | Acceptable latency for a demo; Celery is the post-MVP upgrade path |
 
-## Dev / test dependencies
+---
 
-| Package | Version | Purpose |
-|---|---|---|
-| `coverage` | 7.13.5 | Test coverage reporting |
+## The 5 signature characteristics
 
-## System dependency
+Defined with non-overlapping scopes so the extraction prompt is unambiguous:
 
-`tesseract-ocr` must be installed on the host (or Docker image) for PNG extraction to work.
+| Characteristic | What it captures |
+|---|---|
+| `tone` | Emotional register and personality |
+| `sentence_rhythm` | Sentence length, pacing, structural preference |
+| `formality_level` | Position on conversational → institutional spectrum |
+| `forms_of_address` | How the brand addresses the reader (you / we / one) |
+| `emotional_appeal` | Rational vs. emotional persuasion mode |
 
-```bash
-# macOS
-brew install tesseract
+---
 
-# Debian / Ubuntu
-apt-get install tesseract-ocr
-```
+## Assumptions
 
-If tesseract is not installed, PNG uploads will fail. All other file types (PDF, DOCX, TXT) work without it.
+- Signature is flat JSON — no nested structure — for simple storage and prompt injection
+- Text per document capped at 12,000 characters before Claude call to prevent token overflow
+- Transformation preserves meaning and approximate length — no hard output length constraint
+- PNG OCR quality depends on image resolution; documented limitation, not a blocker
+- English only — no multilingual support in MVP
 
-## Installing
+---
 
-```bash
-venv/bin/pip install -r requirements.txt
-```
+## What was out of scope (intentionally)
 
-## Notable choices
+- Production security hardening
+- PostgreSQL / connection pooling
+- Async Claude calls (Celery + Redis)
+- JWT or SSO authentication
+- Multilingual support
+- Streaming responses
+- Signature version history
 
-- **`pypdf` not `pypdf2`** — `pypdf2` is deprecated; `pypdf` is its maintained successor.
-- **`python-dotenv` not `django-environ`** — lighter dependency, stdlib-compatible `.env` loading.
-- **No `psycopg2`** — SQLite only for MVP. Add `psycopg2` when switching to PostgreSQL.
-- **No task queue** — no Celery/Redis for MVP. Claude calls are synchronous.
+See `STEPS_TO_PRODUCTION.md` for the full post-MVP roadmap.
