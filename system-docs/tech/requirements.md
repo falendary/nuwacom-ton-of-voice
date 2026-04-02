@@ -1,70 +1,107 @@
-# Project Requirements
+# Project Requirements & Decision Log
 
-## Problem
-
-AI-generated texts are generic and impersonal. They ignore brand voice, sound Americanized, and fail to reflect the linguistic nuances and forms of address that make a brand recognizable.
-
-## Goal
-
-Derive a consistent tone-of-voice from existing corporate communications. Store it as a reusable "signature." Use that signature to rewrite future texts so they reflect the brand's unique voice.
+> This document is a formal record of all requirements, decisions, assumptions, and feedback related to this project. Entries are chronological and nothing is removed — changes are added as new entries.
 
 ---
 
-## What was asked for
+## Entry 001 — Initial Brief
+**Source:** `Testday.pdf` (nuwacom test exercise)
+**Date:** 2025-04-02
+**Type:** Original requirement
 
-From the original brief (`Testday.pdf`):
+### Problem Statement
 
-1. Define the 5 most important tone-of-voice characteristics
-2. Build a program that identifies patterns in existing brand texts
-3. Extract and store the characteristics in a structured form (the "signature")
-4. Use the signature to optimize future texts
+AI-generated texts are generic and impersonal. They ignore brand voice, sound Americanized, and fail to reflect the linguistic nuances, tone, and forms of address that make a brand recognizable. Companies need a way to ensure AI-generated content aligns with their communication style.
 
----
+### Goal
 
-## Key decisions
+Derive a consistent tone-of-voice from existing corporate communications. Store it as a reusable "signature." Use that signature to optimize future texts so they reflect the brand's unique voice.
 
-| Topic | Choice | Reason |
+### Tasks specified in brief
+
+1. Define the 5 most important tone-of-voice characteristics (tone, language style, formality level, forms of address, emotional appeal)
+2. Build an analysis program (Python/TypeScript or similar) that identifies patterns in existing texts
+3. Extract and store the derived characteristics in a structured form (the signature)
+4. Use the signature as a prompt basis to optimize future texts
+
+### Technical hints from brief
+
+- Use LLMs for analysis and extraction
+- NLP techniques for semantic and syntactic analysis
+- Optional: small frontend + backend (NodeJS, TypeScript suggested)
+- OpenAI keys offered
+- A perfectly functioning program is not expected; approach and thinking matter more
+
+### Deviations from brief (with rationale)
+
+| Brief suggestion | Our choice | Reason |
 |---|---|---|
-| Language | Python / Django | Stronger NLP toolchain; faster REST API prototyping than NodeJS |
-| AI model | Claude (`claude-sonnet-4-6`) | Superior instruction-following for structured JSON output; nuwacom uses Anthropic — testing their stack makes sense |
-| Database | SQLite | Zero-infra overhead for MVP |
-| Auth | Django Admin only | No custom login UI in scope |
-| Task queue | None (synchronous) | Acceptable latency for a demo; Celery is the post-MVP upgrade path |
+| NodeJS / TypeScript | Django (Python) | Python is stronger for NLP/text processing toolchain; faster to prototype REST APIs with DRF |
+| OpenAI | Claude (Anthropic) | Superior instruction-following for structured JSON output; nuwacom is the client — testing their stack makes sense |
 
 ---
 
-## The 5 signature characteristics
+## Entry 002 — Initial Architecture Decisions
+**Source:** Developer assumptions
+**Date:** 2025-04-02
+**Type:** Assumption
 
-Defined with non-overlapping scopes so the extraction prompt is unambiguous:
-
-| Characteristic | What it captures |
-|---|---|
-| `tone` | Emotional register and personality |
-| `sentence_rhythm` | Sentence length, pacing, structural preference |
-| `formality_level` | Position on conversational → institutional spectrum |
-| `forms_of_address` | How the brand addresses the reader (you / we / one) |
-| `emotional_appeal` | Rational vs. emotional persuasion mode |
-
----
-
-## Assumptions
-
-- Signature is flat JSON — no nested structure — for simple storage and prompt injection
-- Text per document capped at 12,000 characters before Claude call to prevent token overflow
-- Transformation preserves meaning and approximate length — no hard output length constraint
-- PNG OCR quality depends on image resolution; documented limitation, not a blocker
-- English only — no multilingual support in MVP
+- **SQLite** chosen over PostgreSQL for zero-infra MVP speed. Known limitation, documented.
+- **Django Admin** used for auth — no custom login UI in MVP scope.
+- **Synchronous Claude calls** — no Celery/Redis task queue. Acceptable latency for a demo.
+- **12,000 character truncation** per document before Claude call — prevents token overflow, keeps cost predictable.
+- **5 signature characteristics** chosen with non-overlapping scopes (defined in OVERVIEW.md).
+- **Demo data written first** — drives prompt quality and test fixture realism before any code exists.
 
 ---
 
-## What was out of scope (intentionally)
+## Entry 003 — Developer Assumptions (post-review)
+**Source:** Developer
+**Date:** 2025-04-02
+**Type:** Assumption
 
-- Production security hardening
-- PostgreSQL / connection pooling
-- Async Claude calls (Celery + Redis)
-- JWT or SSO authentication
-- Multilingual support
-- Streaming responses
-- Signature version history
+- Signature JSON structure is flat (not nested) for simplicity of storage and prompt injection
+- Claude model pinned to `claude-sonnet-4-6` — best balance of instruction-following and speed for MVP
+- Text transformation preserves meaning and length approximately — no hard length constraint on output
+- PNG OCR quality is not guaranteed; documented as known limitation, not a blocker
+- No multilingual support in MVP — extraction prompt is English-only
 
-See `STEPS_TO_PRODUCTION.md` for the full post-MVP roadmap.
+---
+
+## Entry 004 — Plan Presented to Nuwacom Team
+**Source:** Nuwacom team
+**Date:** 2025-04-02 at 11:36
+**Type:** Sign-off
+
+Plan presented to the full team. No additional feedback, no change in requirements. Moving forward according to the proposed plan as documented in `PLAN.md`.
+
+---
+
+## Entry 005 — Bug Discovered in Production: Claude JSON Parsing Failure
+**Source:** Manual testing during demo
+**Date:** 2025-04-02
+**Type:** Bug report
+
+**Symptom:** Clicking "Extract Signature" returned: `Claude API error: Claude returned malformed JSON: Expecting value: line 1 column 1 (char 0)`
+
+**Root cause:** Claude occasionally wraps its JSON response in markdown code fences (` ```json ... ``` `) despite explicit system prompt instructions not to. The parser received the raw fence instead of valid JSON.
+
+**Fix:** Added `_strip_code_fence()` helper in `core/services/claude.py` to strip fences before parsing. Added two new tests to cover plain and fenced JSON responses.
+
+**GitHub issue:** #19
+**PR:** #20 (`fix-get-signature` branch)
+
+---
+
+## Entry 006 — Post-MVP Code Review Findings
+**Source:** Developer self-review
+**Date:** 2025-04-02
+**Type:** Improvement
+
+Three issues identified after the initial implementation was complete:
+
+1. **Duplicate upload validation** — `ALLOWED_EXTENSIONS`, `MAX_UPLOAD_BYTES`, and the MIME magic-byte map were defined separately in both `core/views.py` and `core/api_views.py`. Extracted to `core/utils.py`.
+2. **Missing filename length guard** — filenames longer than 255 characters would cause a database error at save time. Guard added to `core/utils.validate_file()`.
+3. **Admin field visibility** — `DocumentInline` did not show `extracted_text`; `file` and `filename` in `DocumentAdmin` were editable, risking accidental data corruption. Fixed.
+
+**PR:** `polish` branch
