@@ -88,6 +88,7 @@ def extract_signature(texts: list[str]) -> dict[str, Any]:
     prompt = f"Analyze the following brand documents and extract the tone-of-voice signature:\n\n{combined}"
 
     raw = _call_claude(system=EXTRACTION_SYSTEM, user=prompt)
+    raw = _strip_code_fence(raw)
 
     try:
         data = json.loads(raw)
@@ -140,8 +141,23 @@ def transform_text(text: str, signature: dict[str, Any]) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Internal helper
+# Internal helpers
 # ---------------------------------------------------------------------------
+
+def _strip_code_fence(text: str) -> str:
+    """Remove markdown code fences that Claude sometimes adds despite instructions.
+
+    Handles both ```json ... ``` and ``` ... ``` variants.
+    """
+    text = text.strip()
+    if text.startswith("```"):
+        # Drop the opening fence line (e.g. ```json or just ```)
+        text = text.split("\n", 1)[-1]
+        # Drop the closing fence
+        if text.endswith("```"):
+            text = text[:-3].rstrip()
+    return text.strip()
+
 
 def _call_claude(system: str, user: str) -> str:
     """Send a single message to Claude and return the text content.
