@@ -9,7 +9,8 @@ import logging
 from typing import Any
 
 from django.shortcuts import get_object_or_404
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
+from rest_framework import serializers as drf_serializers
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import JSONParser, MultiPartParser
@@ -91,11 +92,24 @@ class BrandViewSet(viewsets.ModelViewSet):
     @extend_schema(
         request=None,
         responses={
-            200: OpenApiResponse(description="Signature extracted successfully"),
+            200: inline_serializer(
+                name="ExtractResponse",
+                fields={
+                    "brand_id": drf_serializers.IntegerField(),
+                    "previous_signature_existed": drf_serializers.BooleanField(),
+                    "signature": drf_serializers.DictField(
+                        help_text="Five tone-of-voice characteristics: tone, sentence_rhythm, "
+                                  "formality_level, forms_of_address, emotional_appeal.",
+                    ),
+                    "documents_analyzed": drf_serializers.IntegerField(),
+                    "documents_truncated": drf_serializers.IntegerField(),
+                },
+            ),
             400: OpenApiResponse(description="No documents uploaded for this brand"),
             502: OpenApiResponse(description="Claude API failure"),
         },
         summary="Extract tone-of-voice signature from uploaded documents",
+        tags=["brands"],
     )
     @action(detail=True, methods=["post"], url_path="extract")
     def extract(self, request: Request, pk: int = None) -> Response:
@@ -134,13 +148,27 @@ class BrandViewSet(viewsets.ModelViewSet):
         })
 
     @extend_schema(
-        request={"application/json": {"type": "object", "properties": {"text": {"type": "string"}}, "required": ["text"]}},
+        request=inline_serializer(
+            name="TransformRequest",
+            fields={"text": drf_serializers.CharField(help_text="The text to rewrite in the brand's voice.")},
+        ),
         responses={
-            200: OpenApiResponse(description="Text transformed successfully"),
+            200: inline_serializer(
+                name="TransformResponse",
+                fields={
+                    "brand_id": drf_serializers.IntegerField(),
+                    "original": drf_serializers.CharField(),
+                    "transformed": drf_serializers.CharField(),
+                    "original_char_count": drf_serializers.IntegerField(),
+                    "transformed_char_count": drf_serializers.IntegerField(),
+                    "signature_used": drf_serializers.DictField(),
+                },
+            ),
             400: OpenApiResponse(description="Missing text field or no signature extracted yet"),
             502: OpenApiResponse(description="Claude API failure"),
         },
         summary="Rewrite text in the brand's tone-of-voice",
+        tags=["brands"],
     )
     @action(detail=True, methods=["post"], url_path="transform")
     def transform(self, request: Request, pk: int = None) -> Response:
@@ -194,6 +222,11 @@ class DocumentViewSet(viewsets.ViewSet):
 
     parser_classes = [MultiPartParser, JSONParser]
 
+    @extend_schema(
+        responses={200: DocumentSerializer(many=True)},
+        summary="List all documents for a brand",
+        tags=["documents"],
+    )
     def list(self, request: Request, brand_id: int) -> Response:
         """List all documents uploaded for a brand.
 
@@ -203,6 +236,18 @@ class DocumentViewSet(viewsets.ViewSet):
         docs = brand.documents.all()
         return Response(DocumentSerializer(docs, many=True).data)
 
+    @extend_schema(
+        request=inline_serializer(
+            name="DocumentUploadRequest",
+            fields={"file": drf_serializers.FileField(help_text="PDF, DOCX, TXT, or PNG. Max 20 MB.")},
+        ),
+        responses={
+            201: DocumentSerializer,
+            400: OpenApiResponse(description="Unsupported type, oversized, or unreadable file"),
+        },
+        summary="Upload a document and extract its text",
+        tags=["documents"],
+    )
     def create(self, request: Request, brand_id: int) -> Response:
         """Upload a document and extract its text immediately.
 
@@ -237,6 +282,11 @@ class DocumentViewSet(viewsets.ViewSet):
 
         return Response(DocumentSerializer(doc).data, status=status.HTTP_201_CREATED)
 
+    @extend_schema(
+        responses={204: None, 404: OpenApiResponse(description="Document not found")},
+        summary="Delete a document",
+        tags=["documents"],
+    )
     def destroy(self, request: Request, brand_id: int, pk: int = None) -> Response:
         """Delete a document. Does not trigger re-extraction automatically.
 
