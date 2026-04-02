@@ -13,6 +13,7 @@ transform_text(text, signature)  — rewrite text applying a stored signature
 import json
 import logging
 import os
+from pathlib import Path
 from typing import Any
 
 import anthropic
@@ -23,36 +24,8 @@ MODEL = "claude-sonnet-4-6"
 
 SIGNATURE_KEYS = {"tone", "sentence_rhythm", "formality_level", "forms_of_address", "emotional_appeal"}
 
-EXTRACTION_SYSTEM = """\
-You are a brand voice analyst. Your task is to analyze a set of brand documents
-and extract a structured tone-of-voice signature as JSON.
-
-Return ONLY valid JSON with exactly these five keys — no preamble, no markdown fences,
-no explanation:
-
-{
-  "tone": "...",
-  "sentence_rhythm": "...",
-  "formality_level": "...",
-  "forms_of_address": "...",
-  "emotional_appeal": "..."
-}
-
-Key definitions (these scopes must not overlap):
-- tone: The emotional register and personality of the voice — how it feels to read this brand.
-  Do NOT describe sentence structure or grammar here.
-- sentence_rhythm: The structural preference — sentence length, pacing, use of fragments,
-  parallelism, punctuation cadence. Do NOT describe emotional register here.
-- formality_level: Position on the spectrum from intimate/conversational to institutional/formal.
-  Do NOT conflate with tone or personality.
-- forms_of_address: Grammatical person and pronouns the brand uses — how it refers to itself
-  (we/I/none) and how it addresses the reader (you/one/your team/etc.).
-  Do NOT describe emotional register here.
-- emotional_appeal: The primary persuasion mode — where it sits on the rational-to-emotional axis,
-  and what feelings or logic it activates. Do NOT describe tone personality here.
-
-Each value must be a single descriptive sentence or short phrase. Be specific and precise.\
-"""
+_PROMPT_FILE = Path(__file__).parent.parent.parent / "extraction_system_prompt.md"
+EXTRACTION_SYSTEM: str = _PROMPT_FILE.read_text(encoding="utf-8")
 
 TRANSFORMATION_SYSTEM = """\
 You are a brand voice editor. Rewrite the user's text so it matches the provided
