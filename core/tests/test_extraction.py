@@ -70,6 +70,10 @@ class ErrorHandlingTests(TestCase):
         with self.assertRaises(ValueError):
             extract_text(io.BytesIO(b""), "txt")
 
+    def test_non_utf8_txt_raises(self) -> None:
+        with self.assertRaises(ValueError):
+            extract_text(io.BytesIO(b"\xff\xfe\x00invalid"), "txt")
+
     def test_corrupt_pdf_raises(self) -> None:
         with self.assertRaises(ValueError):
             extract_text(io.BytesIO(b"not a pdf"), "pdf")
