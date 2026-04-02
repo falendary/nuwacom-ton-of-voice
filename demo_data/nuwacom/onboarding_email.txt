@@ -1,0 +1,33 @@
+Subject: Your Nuwacom account is ready
+
+Hi [First Name],
+
+Welcome to Nuwacom. Your account is set up and ready to use.
+
+Here is what to do first.
+
+Step 1: Upload your content samples
+
+Go to your brand dashboard and upload three to five pieces of content that represent your voice at its best. Product pages, blog posts, and emails all work well. The more representative your samples, the more accurate your tone signature.
+
+Step 2: Generate your signature
+
+Once your content is uploaded, click Extract Signature. This takes about fifteen seconds. You will see a structured breakdown of your brand voice across five characteristics: tone, sentence rhythm, formality level, forms of address, and emotional appeal.
+
+Step 3: Transform a text
+
+Paste in any draft — from any source — and click Transform. We will rewrite it to match your signature. You can run as many transformations as you need.
+
+A few things worth knowing:
+
+We extract text from PDFs, Word documents, plain text files, and images. Files over 20 MB are not accepted. For image files, text extraction quality depends on image clarity.
+
+Your signature is reusable. Every transformation you run uses the same stored signature unless you regenerate it by uploading new content.
+
+The API is available under Settings if you want to integrate Nuwacom into your existing content workflow.
+
+If anything is unclear, reply to this email and a member of our team will help.
+
+We are glad you are here.
+
+The Nuwacom team

@@ -1,0 +1,30 @@
+Nuwacom Tone-of-Voice Platform
+
+Your brand has a voice. We help you scale it.
+
+What the platform does
+
+Upload your best-performing content — blog posts, product pages, emails, sales copy. Our platform reads it, extracts your tone-of-voice signature, and remembers exactly how your brand communicates.
+
+From that point forward, every piece of AI-generated text goes through your signature before it reaches you. The output is on-brand, not just on-topic.
+
+How it works
+
+Step 1: Upload content samples
+Drag in any combination of PDFs, Word documents, plain text files, or images. We handle the extraction.
+
+Step 2: Generate your signature
+Our AI analyzes your samples and produces a structured profile of your tone: emotional register, sentence rhythm, formality level, forms of address, and emotional appeal strategy.
+
+Step 3: Transform any text
+Paste in a draft — from any source — and we rewrite it to match your signature. The meaning stays intact. The voice becomes yours.
+
+What you get
+
+A reusable tone-of-voice profile stored against your brand. Consistent output across every content type. A clear audit trail of which documents shaped the signature. An API you can integrate into your existing content workflow.
+
+Who it is for
+
+Content teams that produce at scale. Agencies managing multiple brand voices. Marketing leaders who need consistency without micromanagement. Founders who want their voice in the product even as the team grows.
+
+We solve the brand voice problem so you can focus on what you are saying, not how it sounds.

@@ -1,0 +1,33 @@
+There's one more thing.
+
+We've been working on something. Something that changes how you interact with every Apple device you own. Something that makes technology feel less like a tool and more like an extension of how you think.
+
+Today, we're introducing Apple Intelligence.
+
+Apple Intelligence is the personal intelligence system for iPhone, iPad, and Mac. It draws on your personal context — your calendar, your messages, your photos, your files — to help you do things you couldn't do before. Write better. Communicate more clearly. Find what you need, when you need it.
+
+But here's what makes it different from everything else out there.
+
+It's private. By design.
+
+Most AI processes your data on someone else's server. Apple Intelligence processes it on your device. When tasks require more computing power, we've built something entirely new: Private Cloud Compute. Apple silicon servers that process your requests without ever storing your data. Independently verified. Continuously audited.
+
+We're not asking you to choose between intelligence and privacy. We built both.
+
+This is Apple Intelligence. And it's just the beginning.
+
+Now let me show you what it can do.
+
+[demo: Writing Tools]
+
+You're editing an email — and it's not quite right. The tone is off. It's too formal for who you're writing to. You tap Rewrite. Apple Intelligence rewrites it. Warmer. More direct. Still you.
+
+That's not autocorrect. That's your device understanding what you're trying to say and helping you say it better.
+
+[demo: Photo search]
+
+You want a photo from that trip three years ago. You don't remember the date. You don't remember the album. You just remember the light on the water. So you search: "sunset on the lake." It finds it. Instantly.
+
+Your photos. Understood.
+
+This is what intelligence looks like when it's built for you — not for the cloud, not for a server farm, not for someone else's use case. For you.
