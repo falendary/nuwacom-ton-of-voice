@@ -1,0 +1,33 @@
+If your iPhone isn't charging
+
+Check these steps if your iPhone won't charge or charges more slowly than expected.
+
+Check your cable and adapter
+
+Use the cable and adapter that came with your iPhone, or accessories that are Apple-certified. Damaged or uncertified accessories can prevent charging. Look for visible damage to the cable, especially near the connectors.
+
+Check the charging port
+
+Look at the port on the bottom of your iPhone. Remove any debris with a clean, dry, soft-bristled brush — never use a metal tool. A blocked port is one of the most common reasons iPhones don't charge.
+
+Try a different power source
+
+Some power sources don't provide enough current. Try a different USB adapter, a wall outlet instead of a computer, or a different wall outlet entirely.
+
+Restart your iPhone
+
+A temporary software issue can interrupt charging. Restart your iPhone and connect it to power again.
+
+Update iOS
+
+Outdated software can cause charging issues. Go to Settings > General > Software Update and install any available updates.
+
+Check for damage
+
+If your iPhone has been exposed to liquid or was dropped recently, internal damage may be preventing normal charging. Contact Apple Support or visit an Apple Store.
+
+If none of these steps help
+
+Your iPhone may need service. Contact Apple Support at support.apple.com, use the Apple Support app, or visit an Apple Store or Apple Authorized Service Provider. You can also call 1-800-MY-APPLE.
+
+Don't have an Apple Account? You can still get support as a guest.
