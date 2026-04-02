@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Transform — Tone-of-Voice{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Transform Text</h1>
+  <p class="subtitle">Rewrite any text in your brand's tone-of-voice.</p>
+</div>
+
+<section class="card">
+  <form method="post" action="/transform/">
+    {% csrf_token %}
+
+    <div class="form-row">
+      <label for="brand-select">Brand</label>
+      <select name="brand_id" id="brand-select">
+        <option value="">— choose a brand —</option>
+        {% for b in brands %}
+          <option value="{{ b.pk }}" {% if brand and brand.pk == b.pk %}selected{% endif %}>
+            {{ b.name }}{% if not b.signature %} (no signature){% endif %}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    {% if brand and not brand.signature %}
+    <div class="notice">
+      No signature found for <strong>{{ brand.name }}</strong>.
+      Go to <a href="/?brand={{ brand.pk }}">Upload</a>, add documents, and click
+      <em>Extract signature</em> first.
+    </div>
+    {% endif %}
+
+    <div class="form-row">
+      <label for="text-input">Text to rewrite</label>
+      <textarea name="text" id="text-input" rows="6"
+        placeholder="Paste any text here — a draft email, a product description, a social post…">{{ request.POST.text }}</textarea>
+    </div>
+
+    <div class="form-row">
+      <button type="submit" class="btn btn--primary"
+        {% if brand and not brand.signature %}disabled{% endif %}>
+        Transform
+      </button>
+    </div>
+  </form>
+</section>
+
+{% if original %}
+<section class="card">
+  <h2>Result</h2>
+
+  {% if brand.signature %}
+  <div class="signature-used">
+    <h3>Signature applied</h3>
+    <dl>
+      {% for key, value in brand.signature.items %}
+        <dt>{{ key|title|cut:"_" }}</dt>
+        <dd>{{ value }}</dd>
+      {% endfor %}
+    </dl>
+  </div>
+  {% endif %}
+
+  <div class="comparison">
+    <div class="comparison__col">
+      <h3>Original</h3>
+      <pre class="text-block">{{ original }}</pre>
+    </div>
+    <div class="comparison__col">
+      <h3>Transformed</h3>
+      <pre class="text-block">{{ transformed }}</pre>
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}
