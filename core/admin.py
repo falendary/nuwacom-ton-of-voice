@@ -6,8 +6,8 @@ from core.models import Brand, Document
 class DocumentInline(admin.TabularInline):
     model = Document
     extra = 0
-    readonly_fields = ("filename", "file_type", "truncated", "uploaded_at")
-    fields = ("filename", "file_type", "truncated", "uploaded_at")
+    readonly_fields = ("filename", "file_type", "truncated", "uploaded_at", "extracted_text")
+    fields = ("filename", "file_type", "truncated", "uploaded_at", "extracted_text")
 
 
 @admin.register(Brand)
@@ -25,4 +25,4 @@ class BrandAdmin(admin.ModelAdmin):
 class DocumentAdmin(admin.ModelAdmin):
     list_display = ("filename", "brand", "file_type", "truncated", "uploaded_at")
     list_filter = ("file_type", "truncated", "brand")
-    readonly_fields = ("extracted_text", "truncated", "uploaded_at")
+    readonly_fields = ("file", "filename", "extracted_text", "truncated", "uploaded_at")
