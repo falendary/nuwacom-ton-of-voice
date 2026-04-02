@@ -1,5 +1,12 @@
-venv
-.idea
+venv/
 .env
-**/*.pyc
+.idea/
+*.pyc
+__pycache__/
 db.sqlite3
+media/
+.DS_Store
+*.egg-info/
+dist/
+.coverage
+htmlcov/
