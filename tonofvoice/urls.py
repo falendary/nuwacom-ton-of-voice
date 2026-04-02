@@ -4,7 +4,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
+from core.views import transform_view, upload_view
+
 urlpatterns = [
+    path("", upload_view, name="upload"),
+    path("transform/", transform_view, name="transform"),
     path("admin/", admin.site.urls),
     path("api/", include("core.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
