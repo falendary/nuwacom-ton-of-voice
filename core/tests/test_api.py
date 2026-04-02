@@ -129,6 +129,24 @@ class DocumentTests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("20 MB", response.json()["error"])
 
+    @patch("core.api_views.MAX_UPLOAD_BYTES", 0)
+    def test_upload_oversized_via_actual_size_check_returns_400(self) -> None:
+        response = self.client.post(self.list_url, {"file": _txt_file()}, format="multipart")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("20 MB", response.json()["error"])
+
+    def test_upload_wrong_magic_bytes_returns_400(self) -> None:
+        fake_pdf = SimpleUploadedFile("doc.pdf", b"not a real pdf", content_type="application/pdf")
+        response = self.client.post(self.list_url, {"file": fake_pdf}, format="multipart")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("does not match", response.json()["error"])
+
+    @patch("core.api_views.extract_text", side_effect=ValueError("unreadable file"))
+    def test_upload_unreadable_file_returns_400(self, _mock) -> None:
+        response = self.client.post(self.list_url, {"file": _txt_file()}, format="multipart")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("unreadable file", response.json()["error"])
+
     def test_upload_no_file_returns_400(self) -> None:
         response = self.client.post(self.list_url, {}, format="multipart")
         self.assertEqual(response.status_code, 400)
