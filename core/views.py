@@ -15,17 +15,9 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 from core.models import Brand, Document
 from core.services.claude import ClaudeServiceError, extract_signature, transform_text
 from core.services.extraction import extract_text
+from core.utils import validate_file
 
 logger = logging.getLogger(__name__)
-
-ALLOWED_EXTENSIONS = frozenset({"pdf", "docx", "txt", "png"})
-MAX_UPLOAD_BYTES = 20 * 1024 * 1024  # 20 MB
-
-MIME_MAGIC: dict[str, bytes] = {
-    "pdf": b"%PDF",
-    "png": b"\x89PNG",
-    "docx": b"PK",
-}
 
 
 def _ctx(request, **extra: Any) -> dict[str, Any]:
@@ -74,23 +66,10 @@ def _handle_upload(request, brand):
         messages.error(request, "No file selected.")
         return redirect(f"/?brand={brand.pk}")
 
-    name = uploaded.name or ""
-    ext = name.rsplit(".", 1)[-1].lower() if "." in name else ""
-
-    if ext not in ALLOWED_EXTENSIONS:
-        messages.error(request, f"Unsupported file type '.{ext}'. Accepted: pdf, docx, txt, png.")
+    ext, error = validate_file(uploaded)
+    if error:
+        messages.error(request, error)
         return redirect(f"/?brand={brand.pk}")
-
-    if uploaded.size > MAX_UPLOAD_BYTES:
-        messages.error(request, "File exceeds the 20 MB size limit.")
-        return redirect(f"/?brand={brand.pk}")
-
-    if ext in MIME_MAGIC:
-        header = uploaded.read(8)
-        uploaded.seek(0)
-        if not header.startswith(MIME_MAGIC[ext]):
-            messages.error(request, f"File content does not match the '{ext}' format.")
-            return redirect(f"/?brand={brand.pk}")
 
     try:
         extracted, was_truncated = extract_text(uploaded, ext)
