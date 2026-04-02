@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Tone-of-Voice{% endblock %}</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/" class="nav-brand">Tone-of-Voice</a>
+      <ul>
+        <li><a href="/">Upload</a></li>
+        <li><a href="/transform/">Transform</a></li>
+        <li><a href="/api/schema/swagger-ui/" target="_blank">API Docs</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div class="message message--{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
